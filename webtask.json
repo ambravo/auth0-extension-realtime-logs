@@ -1,14 +1,14 @@
 {
-  "title": "Real-time Webtask Logs",
+  "title": "Real-time Webtask Logs - FORK",
   "name": "auth0-extension-realtime-logs",
   "version": "0.0.1",
   "preVersion": "1.3.6",
-  "author": "Auth0, Inc",
-  "description": "Access real-time webtask logs",
+  "author": "Auth0, Inc (FORK)",
+  "description": "Access real-time webtask logs - TEST",
   "type": "application",
   "repository": "https://github.com/auth0/auth0-extension-realtime-logs",
   "docsUrl": "https://auth0.com/docs/extensions/realtime-webtask-logs",
-  "logoUrl": "https://cdn.auth0.com/extensions/auth0-extension-realtime-logs/assets/logo.svg",
+  "logoUrl": "https://cdn.auth0.com/website/website/favicons/auth0-favicon.svg",
   "keywords": [
     "auth0",
     "extension",
