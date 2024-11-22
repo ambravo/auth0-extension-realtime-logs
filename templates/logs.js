@@ -4,7 +4,7 @@ module.exports = `<!DOCTYPE html5>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="shortcut icon" href="https://cdn.auth0.com/styleguide/2.0.1/lib/logos/img/favicon.png" />
+    <link rel="shortcut icon mask-icon" type="image/svg+xml" href="https://cdn.auth0.com/website/website/favicons/auth0-favicon.svg">
     <link rel="stylesheet" type="text/css" href="https://cdn.auth0.com/manage/v0.3.973/css/index.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.auth0.com/styleguide/3.1.6/index.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.auth0.com/webtask-editor/styles/1/wt-editor.min.css">
@@ -15,7 +15,7 @@ module.exports = `<!DOCTYPE html5>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
     <script type="text/javascript" src="https://cdn.auth0.com/js/jwt-decode-1.4.0.min.js"></script>
     <script type="text/javascript" src="https://cdn.auth0.com/js/navbar-1.0.4.min.js"></script>
-    <title>Logs of <%= container %></title>
+    <title>Logs of <%= container %>- AMBA</title>
     <style>
         body, html {
           height: 100vh;
