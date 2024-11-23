@@ -27,7 +27,10 @@ module.exports = function(e) {
 		return n.d(t, "a", t), t
 	}, n.o = function(e, t) {
 		return Object.prototype.hasOwnProperty.call(e, t)
-	}, n.p = "", n(n.s = 7)
+	}, n.p = "", 
+    console.log("TEST");
+    
+  n(n.s = 7)
 }([function(e, t, n) {
 	var s = n(14),
 		o = n(9),
